@@ -14,7 +14,7 @@ class MemoryCollection implements CollectionInterface
      *
      * @var array
      */
-    protected array $data;
+    protected $data;
 
     /**
      * Collection ExpirationTime
