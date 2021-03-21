@@ -21,6 +21,7 @@ script:
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+  - t CODECOV_TOKEN='0e92143b-593e-4700-82c5-d26beee9fd5d'
 
 notifications:
   email: dev@livecommerce.com.br

@@ -9,9 +9,9 @@ namespace Live\Collection;
 class FileCollection implements CollectionInterface
 {
     /**
-     * @var string
+     * @const FILENAME
      */
-    protected string $fileName = 'files/file.txt';
+    const FILENAME = 'files/file.txt';
     /**
      * @var false|resource
      */
@@ -44,7 +44,7 @@ class FileCollection implements CollectionInterface
     {
         $this->data             = [];
         $this->expirationTime   = [];
-        $this->file             = fopen($this->fileName, 'w+');
+        $this->file             = fopen(self::FILENAME, 'w+');
     }
 
     /**
@@ -136,8 +136,8 @@ class FileCollection implements CollectionInterface
     {
         $array = [];
 
-        if (file_exists($this->fileName)) {
-            $contentFile = file($this->fileName);
+        if (file_exists(self::FILENAME)) {
+            $contentFile = file(self::FILENAME);
             for ($x = 0; $x < count($contentFile); $x++) {
                 $line = explode(',', $contentFile[$x]);
                 if (strpos($line[1], '#')) {
