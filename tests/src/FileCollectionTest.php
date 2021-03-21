@@ -4,16 +4,19 @@ namespace Live\Collection;
 
 use PHPUnit\Framework\TestCase;
 
-class MemoryCollectionTest extends TestCase
+/**
+ * Class FileCollectionTest
+ * @package Live\Collection
+ */
+class FileCollectionTest extends TestCase
 {
     /**
      * @test
      * @doesNotPerformAssertions
      */
-    public function objectCanBeConstructed()
+    public function objectCanBeConstructed(): FileCollection
     {
-        $collection = new MemoryCollection();
-        return $collection;
+        return new FileCollection();
     }
 
     /**
@@ -23,21 +26,33 @@ class MemoryCollectionTest extends TestCase
      */
     public function dataCanBeAdded()
     {
-        $collection = new MemoryCollection();
+        $collection = new FileCollection();
         $collection->set('index1', 'value', '5');
-        $collection->set('index2', 5);
+        $collection->set('index2', 5, 30);
         $collection->set('index3', true);
         $collection->set('index4', 6.5);
-        $collection->set('index5', ['data']);
+        $collection->set('index5', ['data','data','data']);
     }
 
-     /**
+    /**
+     * @test
+     * @depends dataCanBeAdded
+     */
+    public function dataCanBeRetrievedArray()
+    {
+        $collection = new FileCollection();
+        $collection->set('index5', ['data','data','data']);
+
+        $this->assertIsArray($collection->get('index5'));
+    }
+
+    /**
      * @test
      * @depends dataCanBeAdded
      */
     public function dataCanBeRetrieved()
     {
-        $collection = new MemoryCollection();
+        $collection = new FileCollection();
         $collection->set('index1', 'value');
 
         $this->assertEquals('value', $collection->get('index1'));
@@ -49,7 +64,7 @@ class MemoryCollectionTest extends TestCase
      */
     public function inexistentIndexShouldReturnDefaultValue()
     {
-        $collection = new MemoryCollection();
+        $collection = new FileCollection();
 
         $this->assertNull($collection->get('index1'));
         $this->assertEquals('defaultValue', $collection->get('index1', 'defaultValue'));
@@ -61,7 +76,7 @@ class MemoryCollectionTest extends TestCase
      */
     public function newCollectionShouldNotContainItems()
     {
-        $collection = new MemoryCollection();
+        $collection = new FileCollection();
         $this->assertEquals(0, $collection->count());
     }
 
@@ -71,7 +86,7 @@ class MemoryCollectionTest extends TestCase
      */
     public function collectionWithItemsShouldReturnValidCount()
     {
-        $collection = new MemoryCollection();
+        $collection = new FileCollection();
         $collection->set('index1', 'value');
         $collection->set('index2', 5);
         $collection->set('index3', true);
@@ -85,7 +100,7 @@ class MemoryCollectionTest extends TestCase
      */
     public function collectionCanBeCleaned()
     {
-        $collection = new MemoryCollection();
+        $collection = new FileCollection();
         $collection->set('index', 'value');
         $this->assertEquals(1, $collection->count());
 
@@ -99,7 +114,7 @@ class MemoryCollectionTest extends TestCase
      */
     public function addedItemShouldExistInCollection()
     {
-        $collection = new MemoryCollection();
+        $collection = new FileCollection();
         $collection->set('index', 'value');
 
         $this->assertTrue($collection->has('index'));
@@ -110,19 +125,18 @@ class MemoryCollectionTest extends TestCase
      */
     public function canIndexExpiration()
     {
-        $collection = new MemoryCollection();
+        $collection = new FileCollection();
         $collection->set('indexB', 'value', 10);
 
         $this->assertTrue($collection->hasExpirationTime('indexB'));
     }
 
     /**
-     * @depends canIndexExpiration
      * @test
      */
     public function canNotIndexExpiration()
     {
-        $collection = new MemoryCollection();
+        $collection = new FileCollection();
         $collection->set('indexB', 'value', 0);
 
         $this->assertFalse($collection->hasExpirationTime('indexB'));
@@ -133,7 +147,7 @@ class MemoryCollectionTest extends TestCase
      */
     public function noExistsIndexExpiration()
     {
-        $collection = new MemoryCollection();
+        $collection = new FileCollection();
         $collection->set('indexB', 'value', 20);
 
         $this->assertFalse($collection->hasExpirationTime('indexC'));
@@ -145,7 +159,7 @@ class MemoryCollectionTest extends TestCase
      */
     public function expirationTimeShouldReturnDefaultValue()
     {
-        $collection = new MemoryCollection();
+        $collection = new FileCollection();
         $collection->set('indexB', 'value', 0);
 
         $this->assertEquals('defaultValue', $collection->get('indexB', 'defaultValue'));

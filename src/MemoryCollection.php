@@ -14,14 +14,29 @@ class MemoryCollection implements CollectionInterface
      *
      * @var array
      */
-    protected $data;
+    protected array $data;
+
+    /**
+     * Collection ExpirationTime
+     *
+     * @var array
+     */
+    protected array $expirationTime;
+
+    /**
+     * Collection ExpirationTime
+     *
+     * @var int
+     */
+    protected int $defaultExpirationTime = 30;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->data = [];
+        $this->data                     = [];
+        $this->expirationTime           = [];
     }
 
     /**
@@ -33,15 +48,26 @@ class MemoryCollection implements CollectionInterface
             return $defaultValue;
         }
 
+        if (!$this->hasExpirationTime($index) || time() > $this->expirationTime[$index]) {
+            return $defaultValue;
+        }
+
         return $this->data[$index];
     }
 
     /**
      * {@inheritDoc}
      */
-    public function set(string $index, $value)
+    public function set(string $index, $value, $expirationTime = null)
     {
         $this->data[$index] = $value;
+        if (is_null($expirationTime) || $expirationTime < 0) {
+            $defaultExpirationTime      = $this->defaultExpirationTime;
+            $expirationTime             =  time() + $defaultExpirationTime;
+        } elseif ($expirationTime > 0) {
+            $expirationTime             = time() + $expirationTime;
+        }
+        $this->expirationTime[$index]   = $expirationTime;
     }
 
     /**
@@ -53,11 +79,25 @@ class MemoryCollection implements CollectionInterface
     }
 
     /**
+     * @param string $index
+     * @return bool
+     */
+    public function hasExpirationTime(string $index)
+    {
+        if (array_key_exists($index, $this->expirationTime)) {
+            if (time() <= $this->expirationTime[$index]) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function count(): int
     {
-        return count($this->data) + 1;
+        return count($this->data);
     }
 
     /**
@@ -65,6 +105,7 @@ class MemoryCollection implements CollectionInterface
      */
     public function clean()
     {
-        $this->data = [];
+        $this->data             = [];
+        $this->expirationTime   = [];
     }
 }
