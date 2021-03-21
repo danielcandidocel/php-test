@@ -21,21 +21,21 @@ class FileCollection implements CollectionInterface
      *
      * @var array
      */
-    protected array $data;
+    protected $data;
 
     /**
      * Collection ExpirationTime
      *
      * @var array
      */
-    protected array $expirationTime;
+    protected $expirationTime;
 
     /**
      * Collection ExpirationTime
      *
      * @var int
      */
-    protected int $defaultExpirationTime = 30;
+    protected $defaultExpirationTime = 30;
 
     /**
      * Constructor
